@@ -1,18 +1,24 @@
+import {
+    baseUrl
+} from './baseUrl'
 const apiObj = {
-    uploadLogo:'/upload/logo',
-    uploadBanner:'/upload/banner',
-    homeBanner:'/home/banner',
-    removeFileById:'/home/removeFileById',
-    getLogo:'/home/getLogo',
-    commonUploadFiles:'/common/uploadFiles',
-    goodAddGood:'/good/addGood',
-    getGoodLists:'/good/getGoodLists',
-    getGoodById:'/good/getGoodById',
-    updateGood:'/good/updateGood',
+    //课程
+    courseGetList: '/course/getList',
+    courseModify: '/course/modify',
+    courseDelete: '/course/delete',
+    //章节
+    courseCatalogGetList: '/courseCatalog/getList',
+    courseCatalogModify: '/courseCatalog/modify',
+    courseCatalogDelete: '/courseCatalog/delete',
+    //段落
+    courseContentGetContent: '/courseContent/getContent',
+    courseContentModify: '/courseContent/modify',
+    courseContentDelete: '/courseContent/delete',
+    commonGetList: '/common/getList',
 }
 for (const key in apiObj) {
     if (apiObj.hasOwnProperty(key)) {
-        apiObj[key] = `http://127.0.0.1:7001${apiObj[key]}`
+        apiObj[key] = `/api${apiObj[key]}`
     }
 }
 export default apiObj

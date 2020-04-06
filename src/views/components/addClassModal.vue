@@ -5,10 +5,10 @@
         <div class="fill_list">
           <div class="fill_name">课程名称</div>
           <div class="fill_val">
-            <el-input placeholder="请输入课程名称"></el-input>
+            <el-input v-model="formData.courseTitle" placeholder="请输入课程名称"></el-input>
           </div>
         </div>
-        <div class="fill_list">
+        <!-- <div class="fill_list">
           <div class="fill_name">负责人</div>
           <div class="fill_val">
             <el-select placeholder="请选择" style="width:300px">
@@ -20,42 +20,96 @@
               ></el-option>
             </el-select>
           </div>
-        </div>
+        </div>-->
         <div class="fill_list">
           <div class="fill_name">课程价格</div>
           <div class="fill_val">
-            <el-input placeholder="请输入课程价格"></el-input>
+            <el-input v-model="formData.courseDesc" placeholder="请输入课程价格"></el-input>
           </div>
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="closeModal">取 消</el-button>
-        <el-button type="primary">确 定</el-button>
+        <el-button :loading="loading" @click="closeModal">取 消</el-button>
+        <el-button :loading="loading" type="primary" @click="save">确 定</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 <script>
 export default {
-  props: ['isShowModal'],
+  props: ["isShowModal", "data"],
   data() {
     return {
-      title: '新增课程',
-      personLists: []
-    }
+      title: "新增课程",
+      personLists: [],
+      formData: {
+        courseTitle: "",
+        courseDesc: ""
+      },
+      loading: false
+    };
   },
   components: {},
-  watch: {},
+  watch: {
+    data(val) {
+      console.log(val)
+      if (val) {
+        this.formData = JSON.parse(JSON.stringify(val));
+        if (val.id) {
+          this.title = "编辑课程";
+        } else {
+          this.title = "新增课程";
+        }
+      } else {
+        this.formData = {
+          courseTitle: "",
+          courseDesc: ""
+        };
+      }
+    }
+  },
   mounted() {},
   methods: {
     handleClose() {
-      this.$emit('closeModal')
+      this.$emit("closeModal");
     },
     closeModal() {
-      this.handleClose()
+      this.handleClose();
+    },
+    save() {
+      if (!this.formData.courseTitle) {
+        this.$message.error("请填写课程名称!");
+        return;
+      }
+      // if (!this.formData.courseTitle) {
+      //   this.$message.error("请填写课程名称!");
+      //   return;
+      // }
+      this.loading = true;
+      this.$post({
+        url: this.$api.courseModify,
+        data: {
+          ...this.formData
+        }
+      })
+        .then(res => {
+          this.loading = false;
+          if (res.success) {
+            this.$message.success(res.msg);
+            this.formData = {
+              courseTitle: "",
+              courseDesc: ""
+            };
+            this.$emit("refresh");
+            this.handleClose();
+          }
+        })
+        .catch(err => {
+          this.loading = false;
+        });
     }
   }
-}
+};
 </script>
 <style lang="scss" scoped>
 .add_class_cont {

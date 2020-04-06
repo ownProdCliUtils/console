@@ -2,7 +2,7 @@
   <div id="contain">
     <el-container>
       <el-header style="text-align: right; font-size: 12px">
-        <el-dropdown>
+        <!-- <el-dropdown>
           <i class="el-icon-setting" style="margin-right: 15px"></i>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>查看</el-dropdown-item>
@@ -10,7 +10,7 @@
             <el-dropdown-item>删除</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-        <span>王小虎</span>
+        <span>王小虎</span> -->
       </el-header>
 
       <div class="contain_cont">
@@ -41,14 +41,6 @@ export default {
           title: '课程管理',
           path: '/class'
         },
-        {
-          title: '商品列表',
-          path: '/goods'
-        },
-        {
-          title: '3333',
-          path: '/ohterPage'
-        }
       ]
     }
   },

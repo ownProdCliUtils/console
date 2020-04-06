@@ -19,14 +19,14 @@ axios.interceptors.response.use(function (response) {
     return Promise.reject(error);
 });
 var instance = axios.create({
-    baseURL: '',
+    // baseURL: '',
     // baseURL: 'http://39.105.193.91:7001/',
     // baseURL: 'http://202.96.191.228:8080/',
     // baseURL: 'http://localhost:7002/',
     // baseURL: '120.78.173.0/',
     timeout: 1000,
     headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/json',
         token: localStorage.getItem('token') || ''
     },
     // `transformRequest` 允许在向服务器发送前，修改请求数据
@@ -34,7 +34,7 @@ var instance = axios.create({
     // 后面数组中的函数必须返回一个字符串，或 ArrayBuffer，或 Stream
     transformRequest: [function (data) {
         // 对 data 进行任意转换处理
-
+        data = JSON.stringify(data)
         return data;
     }],
 
@@ -64,22 +64,22 @@ export const httpGet = (parmas) => {
                     } else {
                         reslove(data)
                         Message({
-                            type: 'type',
+                            type: 'error',
                             message: data.msg
                         })
                     }
                 } else {
                     Message({
-                        type: 'type',
-                        message: data.message
+                        type: 'error',
+                        message: data.msg
                     })
                 }
             })
             .catch(error => {
                 reject(error);
                 Message({
-                    type: 'type',
-                    message: error.message
+                    type: 'error',
+                    message: error.msg
                 })
             });
     })
@@ -92,7 +92,7 @@ export const httpPost = (parmas) => {
     } = parmas
     return new Promise((reslove, reject) => {
         instance.post(
-            url, qs.stringify(data)
+            url, data
         )
             .then((res) => {
                 if (res.status === 200) {
@@ -102,22 +102,22 @@ export const httpPost = (parmas) => {
                     } else {
                         reslove(data)
                         Message({
-                            type: 'type',
+                            type: 'error',
                             message: data.msg
                         })
                     }
                 } else {
                     Message({
-                        type: 'type',
-                        message: data.message
+                        type: 'error',
+                        message: data.msg
                     })
                 }
             })
             .catch((error) => {
                 reject(error);
                 Message({
-                    type: 'type',
-                    message: error.message
+                    type: 'error',
+                    message: error.msg
                 })
             });
     })
