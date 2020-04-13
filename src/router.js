@@ -4,6 +4,7 @@ import Router from 'vue-router'
 import Class from './views/class.vue'
 import ClassChapter from './views/classChapter.vue'
 import Paragraph from './views/paragraph.vue'
+import Test from './views/test.vue'
 
 Vue.use(Router)
 
@@ -26,6 +27,10 @@ export default new Router({
     {
       path: '/paragraph',
       component: Paragraph
+    },
+    {
+      path: '/test',
+      component: Test
     },
   ]
 })

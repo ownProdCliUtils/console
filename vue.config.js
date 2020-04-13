@@ -6,11 +6,12 @@ module.exports = {
                 pathRewrite: {
                     '^/api': ''
                 },
-                secure:false,
+                secure: false,
                 changeOrigin: true
             }
         }
-    }
+    },
+    publicPath: './'
 }
 
 /*
@@ -23,7 +24,7 @@ module.exports = {
 5.            '^/api5' : '/api'
 6.        }
 7.     }
-8.   } 
+8.   }
 其中
 第2行中的 '/api5'是自定义的本地请求时的名字
 第3行的target表示代理的服务器url

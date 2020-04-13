@@ -12,12 +12,16 @@
     <div class="table_lists">
       <el-table v-loading="loading" :data="tableData" style="width: 100%">
         <el-table-column prop="courseTitle" label="课程名称"></el-table-column>
-        <el-table-column prop label="课程价格"></el-table-column>
+        <el-table-column prop="price" label="课程价格"></el-table-column>
         <el-table-column prop label="课程分类"></el-table-column>
         <el-table-column prop label="负责人"></el-table-column>
         <el-table-column label="操作" width="300">
           <template slot-scope="scope">
-            <el-button size="mini" :loading="scope.row.loading" @click="linkToChapter(scope.row)">编辑章节</el-button>
+            <el-button
+              size="mini"
+              :loading="scope.row.loading"
+              @click="linkToChapter(scope.row)"
+            >编辑章节</el-button>
             <el-button size="mini" :loading="scope.row.loading" @click="eidtRow(scope.row)">编辑</el-button>
             <el-button size="mini" :loading="scope.row.loading" @click="remove(scope.row)">删除</el-button>
           </template>
@@ -43,7 +47,7 @@
   </div>
 </template>
 <script>
-import AddClassModal from "./components/addClassModal";
+import AddClassModal from './components/addClassModal'
 export default {
   props: [],
   data() {
@@ -53,10 +57,10 @@ export default {
       pageSize: 10,
       pageNum: 1,
       total: 0,
-      courseTitle: "",
+      courseTitle: '',
       rowData: null,
       loading: false
-    };
+    }
   },
   components: {
     AddClassModal
@@ -64,64 +68,64 @@ export default {
   watch: {
     isShowAddModal(val) {
       if (!val) {
-        this.rowData = null;
+        this.rowData = null
       }
     }
   },
   mounted() {
-    this.getLists();
+    this.getLists()
   },
   methods: {
     closeModal() {
-      this.isShowAddModal = false;
+      this.isShowAddModal = false
     },
     openAddModal() {
-      this.isShowAddModal = true;
+      this.isShowAddModal = true
     },
     linkToChapter(row) {
       this.$router.push({
-        path: "/classChapter",
+        path: '/classChapter',
         query: {
           title: row.courseDesc,
           id: row.id
         }
-      });
+      })
     },
     eidtRow(row) {
-      this.rowData = row;
-      this.openAddModal();
+      this.rowData = row
+      this.openAddModal()
     },
     search() {
-      this.pageNum = 1;
-      this.getLists();
+      this.pageNum = 1
+      this.getLists()
     },
     remove(row) {
-      row.loading = true;
+      row.loading = true
       this.$get({
         url: `${this.$api.courseDelete}/${row.id}`,
         data: {}
       })
         .then(res => {
-          row.loading = false;
+          row.loading = false
           if (res.success) {
-            this.$message.success(res.msg);
-            this.refresh();
+            this.$message.success(res.msg)
+            this.refresh()
           }
         })
         .catch(err => {
-          row.loading = false;
-        });
+          row.loading = false
+        })
     },
     refresh() {
-      this.pageNum = 1;
-      this.getLists();
+      this.pageNum = 1
+      this.getLists()
     },
     changePage(val) {
-      this.pageNum = val;
-      this.getLists();
+      this.pageNum = val
+      this.getLists()
     },
     getLists() {
-      this.loading = true;
+      this.loading = true
       this.$post({
         url: this.$api.courseGetList,
         data: {
@@ -133,21 +137,21 @@ export default {
         }
       })
         .then(res => {
-          this.loading = false;
+          this.loading = false
           if (res.success) {
             res.data.data.forEach(i => {
-              i.loading = false;
-            });
-            this.tableData = res.data.data;
-            this.total = res.data.recordsTotal;
+              i.loading = false
+            })
+            this.tableData = res.data.data
+            this.total = res.data.recordsTotal
           }
         })
         .catch(err => {
-          this.loading = false;
-        });
+          this.loading = false
+        })
     }
   }
-};
+}
 </script>
 <style lang="scss" scoped>
 .chapter_page {

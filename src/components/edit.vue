@@ -1,13 +1,13 @@
 <template>
   <div class="wang_editor">
     <div ref="tooBar" class="toolbar"></div>
-    <div ref="edit" class="edit"></div>
+    <div ref="edit" class="edit" :style="`height:${height || 600}px;`"></div>
   </div>
 </template>
 <script>
 import E from 'wangeditor'
 export default {
-  props: ['value'],
+  props: ['value','height'],
   data() {
     return {
       editor: ''

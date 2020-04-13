@@ -1,12 +1,18 @@
 <template>
   <div class="add_class_modal">
-    <el-dialog :title="title" :visible.sync="isShowModal" width="800px" :before-close="handleClose">
+    <el-dialog
+      :append-to-body="true"
+      :title="title"
+      :visible.sync="isShowModal"
+      width="800px"
+      :before-close="handleClose"
+    >
       <div class="add_class_cont">
         <div class="add_class_top">
           <div class="fill_list">
             <div class="fill_name">段落名称</div>
             <div class="fill_val">
-              <el-input placeholder="请输入段落名称"></el-input>
+              <el-input v-model="formData.contentName" placeholder="请输入段落名称"></el-input>
             </div>
           </div>
           <div class="fill_list">
@@ -25,13 +31,19 @@
           <div class="fill_list">
             <div class="fill_name">优先级</div>
             <div class="fill_val">
-              <el-input placeholder="请输入优先级"></el-input>
+              <el-input type="number" v-model="formData.priorityLevel" placeholder="请输入优先级"></el-input>
             </div>
           </div>
         </div>
         <div class="add_class_bot">
           <template v-if="formData.moduleType==0">
-            <Edit :value="formData.content" @change="changeEidt"></Edit>
+            <Edit :value="formData.courseContentVali.courseContent" @change="changeEidt"></Edit>
+          </template>
+          <template v-if="formData.moduleType==1">
+            <Upload ref="upload"></Upload>
+          </template>
+          <template v-if="formData.moduleType==2">
+            <AddMoudle ref="addMoudle"></AddMoudle>
           </template>
         </div>
       </div>
@@ -43,53 +55,81 @@
   </div>
 </template>
 <script>
-import Edit from "@/components/edit";
+import Edit from '@/components/edit'
+import Upload from '@/components/upload'
+import AddMoudle from './addMoudle'
 export default {
-  props: ["isShowModal", "data"],
+  props: ['isShowModal', 'data'],
   data() {
     return {
-      title: "新增段落",
+      title: '新增段落',
       paragraphLists: [],
       formData: {
         moduleType: null,
         catalogId: this.$route.query.catalogId,
-        content: ""
+        contentName: '',
+        courseContentVali: {
+          courseContent: ''
+        },
+        questionBankVali: {
+          partiseDesc: '',
+          answer: ''
+        },
+        remarksDtoList: [],
+        videoContentVali: {
+          fileName: ''
+        },
+        priorityLevel: null
       }
-    };
+    }
   },
   components: {
-    Edit
+    Edit,
+    Upload,
+    AddMoudle
   },
   watch: {
     data(val) {
       if (val) {
-        this.formData = JSON.parse(JSON.stringify(val));
+        this.formData = JSON.parse(JSON.stringify(val))
         if (val.id) {
-          this.title = "编辑段落";
-        }else{
-          this.title = "新增段落";
+          this.title = '编辑段落'
+        } else {
+          this.title = '新增段落'
         }
       } else {
         this.formData = {
           moduleType: null,
           catalogId: this.$route.query.catalogId,
-          content: ""
-        };
+          contentName: '',
+          courseContentVali: {
+            courseContent: ''
+          },
+          questionBankVali: {
+            partiseDesc: '',
+            answer: ''
+          },
+          remarksDtoList: [],
+          videoContentVali: {
+            fileName: ''
+          },
+          priorityLevel: null
+        }
       }
     }
   },
   mounted() {
-    this.getMoudleType();
+    this.getMoudleType()
   },
   methods: {
     handleClose() {
-      this.$emit("closeModal");
+      this.$emit('closeModal')
     },
     closeModal() {
-      this.handleClose();
+      this.handleClose()
     },
     changeEidt(val) {
-      this.formData.content = val;
+      this.formData.courseContentVali.courseContent = val
     },
     getMoudleType() {
       this.$get({
@@ -97,31 +137,74 @@ export default {
         data: {}
       }).then(res => {
         if (res.success) {
-          this.paragraphLists = res.data;
+          this.paragraphLists = res.data
         }
-      });
+      })
     },
     save() {
+      let data = {
+        ...this.formData
+      }
+      if (this.formData.moduleType == 1) {
+        data = {
+          ...data,
+          ...this.$refs.upload.sendData()
+        }
+      }
+      if (this.formData.moduleType == 2) {
+        data = {
+          ...data,
+          ...this.$refs.addMoudle.sendData()
+        }
+      }
+      console.log(data)
+      if (!data.contentName) {
+        this.$message.error('请填写段落名称')
+        return
+      }
+      if (!data.moduleType) {
+        this.$message.error('请填写段落类型')
+        return
+      }
+      if (!data.priorityLevel) {
+        this.$message.error('请填写段落优先级')
+        return
+      }
+      if(data.moduleType == 0){
+  
+      }
       this.$post({
         url: this.$api.courseContentModify,
         data: {
-          ...this.formData
+          ...data
         }
       }).then(res => {
         if (res.success) {
-          this.$message.success(res.msg);
+          this.$message.success(res.msg)
           this.formData = {
             moduleType: null,
-            catalogId: null,
-            content: ""
-          };
-          this.$emit("refresh");
-          this.handleClose();
+            catalogId: this.$route.query.catalogId,
+            contentName: '',
+            courseContentVali: {
+              courseContent: ''
+            },
+            questionBankVali: {
+              partiseDesc: '',
+              answer: ''
+            },
+            remarksDtoList: [],
+            videoContentVali: {
+              fileName: ''
+            },
+            priorityLevel: null
+          }
+          this.$emit('refresh')
+          this.handleClose()
         }
-      });
+      })
     }
   }
-};
+}
 </script>
 <style lang="scss" scoped>
 .add_class_cont {

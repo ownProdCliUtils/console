@@ -24,7 +24,7 @@
         <div class="fill_list">
           <div class="fill_name">课程价格</div>
           <div class="fill_val">
-            <el-input v-model="formData.courseDesc" placeholder="请输入课程价格"></el-input>
+            <el-input type="number" v-model="formData.price" placeholder="请输入课程价格"></el-input>
           </div>
         </div>
       </div>
@@ -44,7 +44,8 @@ export default {
       personLists: [],
       formData: {
         courseTitle: "",
-        courseDesc: ""
+        courseDesc: "",
+        price:null
       },
       loading: false
     };
@@ -63,7 +64,8 @@ export default {
       } else {
         this.formData = {
           courseTitle: "",
-          courseDesc: ""
+          courseDesc: "",
+          price:null
         };
       }
     }
@@ -98,7 +100,8 @@ export default {
             this.$message.success(res.msg);
             this.formData = {
               courseTitle: "",
-              courseDesc: ""
+              courseDesc: "",
+              price:null
             };
             this.$emit("refresh");
             this.handleClose();

@@ -15,10 +15,17 @@ const apiObj = {
     courseContentModify: '/courseContent/modify',
     courseContentDelete: '/courseContent/delete',
     commonGetList: '/common/getList',
+    fileUploadFile: '/file/uploadFile',
+    fileVideo: '/file/video',
 }
 for (const key in apiObj) {
     if (apiObj.hasOwnProperty(key)) {
-        apiObj[key] = `/api${apiObj[key]}`
+        let url = `/api${apiObj[key]}`
+        if (process.env.NODE_ENV !== "development") {
+            url = `${baseUrl}${apiObj[key]}`
+        }
+        apiObj[key] = url
     }
 }
+console.log(process.env);
 export default apiObj
