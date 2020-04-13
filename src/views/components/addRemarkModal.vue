@@ -36,78 +36,82 @@
   </div>
 </template>
 <script>
-import Edit from '@/components/edit'
+import Edit from "@/components/edit";
 export default {
-  props: ['isShowModal', 'data'],
+  props: ["isShowModal", "data"],
   data() {
     return {
-      title: '新增备注',
+      title: "新增备注",
       personLists: [],
       formData: {
-        title: '',
-        content: '',
+        title: "",
+        content: "",
         priorityLevel: null
       }
-    }
+    };
   },
   components: {
     Edit
   },
   watch: {
     data(val) {
-      console.log(val)
-      if (val) {
-        this.formData = JSON.parse(JSON.stringify(val))
-        this.title = '编辑备注'
-      } else {
-        this.formData = {
-          title: '',
-          content: '',
-          priorityLevel: null
-        }
-        this.title = '新增备注'
-      }
+      this.init(val);
     }
   },
-  mounted() {},
+  mounted() {
+    this.init(this.data);
+  },
   methods: {
+    init(val) {
+      if (val) {
+        this.formData = JSON.parse(JSON.stringify(val));
+        this.title = "编辑备注";
+      } else {
+        this.formData = {
+          title: "",
+          content: "",
+          priorityLevel: null
+        };
+        this.title = "新增备注";
+      }
+    },
     handleClose() {
-      this.$emit('closeModal')
+      this.$emit("closeModal");
     },
     closeModal() {
-      this.handleClose()
+      this.handleClose();
     },
     changeEidt(val) {
-      this.formData.content = val
+      this.formData.content = val;
     },
     save() {
       if (!this.formData.title) {
-        this.$message.error('请填写备注的标题')
-        return
+        this.$message.error("请填写备注的标题");
+        return;
       }
       if (!this.formData.content) {
-        this.$message.error('请填写备注的答案')
-        return
+        this.$message.error("请填写备注的答案");
+        return;
       }
       if (!this.formData.priorityLevel) {
-        this.$message.error('请填写备注的优先级')
-        return
+        this.$message.error("请填写备注的优先级");
+        return;
       }
-      if (this.title === '编辑备注') {
-        this.$emit('getData', {
-          type: 'eidt',
+      if (this.title === "编辑备注") {
+        this.$emit("getData", {
+          type: "eidt",
           data: this.formData
-        })
+        });
       } else {
-        this.$emit('getData', {
-          type: 'add',
+        this.$emit("getData", {
+          type: "add",
           data: this.formData
-        })
+        });
       }
-      this.handleClose()
+      this.handleClose();
     }
   }
-}
+};
 </script>
 <style lang="scss" scoped>
 .add_remark_modal {

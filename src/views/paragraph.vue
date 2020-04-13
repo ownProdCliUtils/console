@@ -8,9 +8,9 @@
     </div>
     <div class="table_lists">
       <el-table v-loading="loading" :data="tableData" style="width: 100%">
-        <el-table-column prop label="段落名称"></el-table-column>
+        <el-table-column prop="contentName" label="段落名称"></el-table-column>
         <el-table-column prop="moduleType" label="段落类型"></el-table-column>
-        <el-table-column prop label="优先级"></el-table-column>
+        <el-table-column prop="priorityLevel" label="优先级"></el-table-column>
         <el-table-column label="操作" width="300">
           <template slot-scope="scope">
             <el-button size="mini" @click="eidtRow(scope.row)">编辑段落</el-button>
@@ -24,6 +24,7 @@
       @refresh="refresh"
       :isShowModal="isShowAddModal"
       @closeModal="closeModal"
+      v-if="isShowAddModal"
     ></AddParagraphModal>
   </div>
 </template>
@@ -63,6 +64,7 @@ export default {
       this.getLists();
     },
     eidtRow(row) {
+      console.log(row)
       this.rowData = row;
       this.openAddModal();
     },
