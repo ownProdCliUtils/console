@@ -7,7 +7,7 @@
       width="800px"
       :before-close="handleClose"
     >
-      <div class="add_class_cont">
+      <div class="add_class_cont" v-loading="pageLoading">
         <div class="add_class_top">
           <div class="fill_list">
             <div class="fill_name">段落名称</div>
@@ -40,7 +40,7 @@
             <Edit :value="formData.courseContentVali.courseContent" @change="changeEidt"></Edit>
           </template>
           <template v-if="formData.moduleType==1">
-            <Upload :data="formData.courseContentVali" ref="upload"></Upload>
+            <Upload :data="formData.videoContentVali" ref="upload"></Upload>
           </template>
           <template v-if="formData.moduleType==2">
             <AddMoudle :data="formData.questionBankVali" ref="addMoudle"></AddMoudle>
@@ -48,40 +48,42 @@
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="closeModal">取 消</el-button>
-        <el-button type="primary" @click="save">确 定</el-button>
+        <el-button :loading="loading" @click="closeModal">取 消</el-button>
+        <el-button type="primary" :loading="loading" @click="save">确 定</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 <script>
-import Edit from "@/components/edit";
-import Upload from "@/components/upload";
-import AddMoudle from "./addMoudle";
+import Edit from '@/components/edit'
+import Upload from '@/components/upload'
+import AddMoudle from './addMoudle'
 export default {
-  props: ["isShowModal", "data"],
+  props: ['isShowModal', 'data'],
   data() {
     return {
-      title: "新增段落",
+      title: '新增段落',
       paragraphLists: [],
       formData: {
         moduleType: null,
         catalogId: this.$route.query.catalogId,
-        contentName: "",
+        contentName: '',
         courseContentVali: {
-          courseContent: ""
+          courseContent: ''
         },
         questionBankVali: {
-          partiseDesc: "",
-          answer: "",
+          partiseDesc: '',
+          answer: '',
           remarksDtoList: []
         },
         videoContentVali: {
-          fileName: ""
+          fileName: ''
         },
         priorityLevel: null
-      }
-    };
+      },
+      pageLoading: false,
+      loading: false
+    }
   },
   components: {
     Edit,
@@ -90,168 +92,180 @@ export default {
   },
   watch: {
     data(val) {
-      this.init(val);
+      this.init(val)
     }
   },
   mounted() {
-    this.getMoudleType();
+    this.getMoudleType()
   },
   methods: {
     init(val) {
-      console.log("111", val);
+      console.log('111', val)
       if (val) {
-        const rowData = JSON.parse(JSON.stringify(val));
-        console.log(this.formData);
-        this.formData.moduleType = rowData.moduleType;
-        this.formData.priorityLevel = rowData.priorityLevel;
-        this.formData.catalogId = rowData.catalogId;
-        this.formData.contentName = rowData.contentName;
+        const rowData = JSON.parse(JSON.stringify(val))
+        console.log(this.formData)
+        this.formData.moduleType = rowData.moduleType
+        this.formData.priorityLevel = rowData.priorityLevel
+        this.formData.catalogId = rowData.catalogId
+        this.formData.contentName = rowData.contentName
         if (rowData.moduleType == 0) {
-          this.formData.courseContentVali = JSON.parse(rowData.content);
+          this.formData.courseContentVali = JSON.parse(rowData.content)
         }
         if (rowData.moduleType == 1) {
-          this.formData.videoContentVali = JSON.parse(rowData.content);
+          this.formData.videoContentVali = JSON.parse(rowData.content)
         }
         if (rowData.moduleType == 2) {
-          this.formData.questionBankVali = JSON.parse(rowData.content);
+          this.formData.questionBankVali = JSON.parse(rowData.content)
         }
         if (val.id) {
-          console.log(11111111111);
-          this.title = "编辑段落";
+          console.log(11111111111)
+          this.title = '编辑段落'
           this.formData.id = val.id
         } else {
-          this.title = "新增段落";
+          this.title = '新增段落'
         }
       } else {
         this.formData = {
           moduleType: null,
           catalogId: this.$route.query.catalogId,
-          contentName: "",
+          contentName: '',
           courseContentVali: {
-            courseContent: ""
+            courseContent: ''
           },
           questionBankVali: {
-            partiseDesc: "",
-            answer: "",
+            partiseDesc: '',
+            answer: '',
             remarksDtoList: []
           },
           videoContentVali: {
-            fileName: ""
+            fileName: ''
           },
           priorityLevel: null
-        };
+        }
       }
       console.log(this.formData)
     },
     handleClose() {
-      this.$emit("closeModal");
+      this.$emit('closeModal')
     },
     closeModal() {
-      this.handleClose();
+      this.handleClose()
     },
     changeEidt(val) {
-      this.formData.courseContentVali.courseContent = val;
+      this.formData.courseContentVali.courseContent = val
     },
     getMoudleType() {
+      this.pageLoading = true
       this.$get({
         url: `${this.$api.commonGetList}/module_type`,
         data: {}
-      }).then(res => {
-        if (res.success) {
-          this.paragraphLists = res.data;
-          this.init(this.data);
-        }
-      });
+      })
+        .then(res => {
+          this.pageLoading = false
+          if (res.success) {
+            this.paragraphLists = res.data
+            this.init(this.data)
+          }
+        })
+        .catch(err => {
+          this.pageLoading = false
+        })
     },
     save() {
       let data = {
         ...this.formData
-      };
+      }
       if (this.formData.moduleType == 1) {
         data = {
           ...data,
           ...this.$refs.upload.sendData()
-        };
+        }
       }
       if (this.formData.moduleType == 2) {
         data = {
           ...data,
           ...this.$refs.addMoudle.sendData()
-        };
+        }
       }
-      console.log(data);
+      console.log(data)
       if (!data.contentName) {
-        this.$message.error("请填写段落名称");
-        return;
+        this.$message.error('请填写段落名称')
+        return
       }
       if (!data.moduleType && data.moduleType !== 0) {
-        this.$message.error("请填写段落类型");
-        return;
+        this.$message.error('请填写段落类型')
+        return
       }
       if (!data.priorityLevel) {
-        this.$message.error("请填写段落优先级");
-        return;
+        this.$message.error('请填写段落优先级')
+        return
       }
       if (data.moduleType == 0) {
         if (!data.courseContentVali.courseContent) {
-          this.$message.error("请填写课程内容");
-          return;
+          this.$message.error('请填写课程内容')
+          return
         }
       }
       if (data.moduleType == 1) {
         if (!data.videoContentVali.fileName) {
-          this.$message.error("请上传课程视频");
-          return;
+          this.$message.error('请上传课程视频')
+          return
         }
       }
       if (data.moduleType == 2) {
         if (!data.questionBankVali.partiseDesc) {
-          this.$message.error("请填写练习说明");
-          return;
+          this.$message.error('请填写练习说明')
+          return
         }
         if (!data.questionBankVali.answer) {
-          this.$message.error("请填写答案");
-          return;
+          this.$message.error('请填写答案')
+          return
         }
         console.log(data)
         if (!data.questionBankVali.remarksDtoList.length) {
-          this.$message.error("请新增备注");
-          return;
+          this.$message.error('请新增备注')
+          return
         }
       }
-      console.log(data);
+      console.log(data)
+      this.loading = true
       this.$post({
         url: this.$api.courseContentModify,
         data: {
           ...data
         }
-      }).then(res => {
-        if (res.success) {
-          this.$message.success(res.msg);
-          this.formData = {
-            moduleType: null,
-            catalogId: this.$route.query.catalogId,
-            contentName: "",
-            courseContentVali: {
-              courseContent: ""
-            },
-            questionBankVali: {
-              partiseDesc: "",
-              answer: "",
-              remarksDtoList: []
-            },
-            videoContentVali: {
-              fileName: ""
-            },
-            priorityLevel: null
-          };
-          this.$emit("refresh");
-          this.handleClose();
-        }
-      });
+      })
+        .then(res => {
+          this.loading = false
+          if (res.success) {
+            this.$message.success(res.msg)
+            this.formData = {
+              moduleType: null,
+              catalogId: this.$route.query.catalogId,
+              contentName: '',
+              courseContentVali: {
+                courseContent: ''
+              },
+              questionBankVali: {
+                partiseDesc: '',
+                answer: '',
+                remarksDtoList: []
+              },
+              videoContentVali: {
+                fileName: ''
+              },
+              priorityLevel: null
+            }
+            this.$emit('refresh')
+            this.handleClose()
+          }
+        })
+        .catch(err => {
+          this.loading = false
+        })
     }
   }
-};
+}
 </script>
 <style lang="scss" scoped>
 .add_class_cont {

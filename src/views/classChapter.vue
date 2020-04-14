@@ -1,5 +1,11 @@
 <template>
   <div class="class_page">
+    <div class="breadcrumb">
+      <el-breadcrumb>
+        <el-breadcrumb-item :to="{ path: '/class' }">课程</el-breadcrumb-item>
+        <el-breadcrumb-item>章节</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
     <div class="header_cont">
       <div class="header_left">
         <el-input placeholder="请输入查询的内容"></el-input>
@@ -41,7 +47,7 @@
   </div>
 </template>
 <script>
-import AddChapterModal from "./components/addChapterModal";
+import AddChapterModal from './components/addChapterModal'
 export default {
   props: [],
   data() {
@@ -50,7 +56,7 @@ export default {
       classLists: [],
       rowData: null,
       loading: false
-    };
+    }
   },
   components: {
     AddChapterModal
@@ -58,29 +64,30 @@ export default {
   watch: {
     isShowAddModal(val) {
       if (!val) {
-        this.rowData = null;
+        this.rowData = null
       }
     }
   },
   mounted() {
-    this.getLists();
+    this.getLists()
   },
   methods: {
     closeModal() {
-      this.isShowAddModal = false;
+      this.isShowAddModal = false
     },
     openAddModal() {
-      this.isShowAddModal = true;
+      this.isShowAddModal = true
     },
     linkToParagraph(row) {
-      console.log(row);
+      console.log(row)
       this.$router.push({
-        path: "/paragraph",
+        path: '/paragraph',
         query: {
           title: row.catalogName,
-          catalogId: row.id
+          catalogId: row.id,
+          courseId:this.$route.query.id
         }
-      });
+      })
     },
     remove(row) {
       this.$get({
@@ -88,28 +95,28 @@ export default {
         data: {}
       }).then(res => {
         if (res.success) {
-          this.$message.success(res.msg);
-          this.refresh();
+          this.$message.success(res.msg)
+          this.refresh()
         }
-      });
+      })
     },
     refresh() {
-      this.getLists();
+      this.getLists()
     },
     eidtRow(row) {
-      console.log(row);
-      this.rowData = row;
-      this.openAddModal();
+      console.log(row)
+      this.rowData = row
+      this.openAddModal()
     },
     addNewChilde(row) {
       this.rowData = {
         parentId: row.id,
-        type: "newChild"
-      };
-      this.openAddModal();
+        type: 'newChild'
+      }
+      this.openAddModal()
     },
     getLists() {
-      this.loading = true;
+      this.loading = true
       this.$post({
         url: this.$api.courseCatalogGetList,
         data: {
@@ -117,17 +124,17 @@ export default {
         }
       })
         .then(res => {
-          this.loading = false;
+          this.loading = false
           if (res.success) {
-            this.classLists = res.data;
+            this.classLists = res.data
           }
         })
         .catch(err => {
-          this.loading = false;
-        });
+          this.loading = false
+        })
     }
   }
-};
+}
 </script>
 <style lang="scss" scoped>
 .class_page {
@@ -141,5 +148,9 @@ export default {
   .table_lists {
     padding-top: 30px;
   }
+}
+.breadcrumb{
+  height: 30px;
+  line-height: 30px;
 }
 </style>

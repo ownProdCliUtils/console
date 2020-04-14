@@ -1,7 +1,17 @@
 <template>
   <div class="chapter_page">
+    <div class="breadcrumb">
+      <el-breadcrumb>
+        <el-breadcrumb-item
+          :to="{ path: '/classChapter',query:{
+          id:$route.query.courseId
+        } }"
+        >章节</el-breadcrumb-item>
+        <el-breadcrumb-item>段落</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
     <div class="header_cont">
-      <div class="header_left">章节名称</div>
+      <div class="header_left">{{$route.query.title || '章节名称'}}</div>
       <div class="header_right">
         <el-button @click="openAddModal" type="danger">新增段落</el-button>
       </div>
@@ -29,7 +39,7 @@
   </div>
 </template>
 <script>
-import AddParagraphModal from "./components/addParagraphModal";
+import AddParagraphModal from './components/addParagraphModal'
 export default {
   props: [],
   data() {
@@ -38,7 +48,7 @@ export default {
       tableData: [],
       rowData: null,
       loading: false
-    };
+    }
   },
   components: {
     AddParagraphModal
@@ -46,27 +56,27 @@ export default {
   watch: {
     isShowAddModal(val) {
       if (!val) {
-        this.rowData = null;
+        this.rowData = null
       }
     }
   },
   mounted() {
-    this.getLists();
+    this.getLists()
   },
   methods: {
     closeModal() {
-      this.isShowAddModal = false;
+      this.isShowAddModal = false
     },
     openAddModal() {
-      this.isShowAddModal = true;
+      this.isShowAddModal = true
     },
     refresh() {
-      this.getLists();
+      this.getLists()
     },
     eidtRow(row) {
       console.log(row)
-      this.rowData = row;
-      this.openAddModal();
+      this.rowData = row
+      this.openAddModal()
     },
     remove(row) {
       this.$get({
@@ -74,13 +84,13 @@ export default {
         data: {}
       }).then(res => {
         if (res.success) {
-          this.$message.success(res.msg);
-          this.refresh();
+          this.$message.success(res.msg)
+          this.refresh()
         }
-      });
+      })
     },
     getLists() {
-      this.loading = true;
+      this.loading = true
       this.$post({
         url: this.$api.courseContentGetContent,
         data: {
@@ -88,23 +98,28 @@ export default {
         }
       })
         .then(res => {
-          this.loading = false;
+          this.loading = false
           if (res.success) {
-            this.tableData = res.data;
+            this.tableData = res.data
           }
         })
         .catch(err => {
-          this.loading = false;
-        });
+          this.loading = false
+        })
     }
   }
-};
+}
 </script>
 <style lang="scss" scoped>
 .chapter_page {
   .header_cont {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    .header_left{
+      font-size: 18px;
+      font-weight: bold;
+    }
     .header_right {
       display: flex;
     }
@@ -112,5 +127,9 @@ export default {
   .table_lists {
     padding-top: 30px;
   }
+}
+.breadcrumb {
+  height: 30px;
+  line-height: 30px;
 }
 </style>
