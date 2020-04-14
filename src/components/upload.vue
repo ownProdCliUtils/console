@@ -89,7 +89,9 @@ export default {
     },
     bannerSuccess(res, file, fileList) {
       if (res.success) {
-        this.formData.videoContentVali.fileName = res.data
+        this.init({
+          fileName: res.data
+        })
       } else {
         this.$message.error(res.msg)
       }
