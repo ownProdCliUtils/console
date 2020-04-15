@@ -30,7 +30,7 @@
         <!-- <el-table-column prop="parentId" label="归属章节"></el-table-column> -->
         <el-table-column label="操作" width="300">
           <template slot-scope="scope">
-            <el-button size="mini" @click="linkToParagraph(scope.row)">编辑段落</el-button>
+            <el-button v-if="scope.row.list.length<1" size="mini" @click="linkToParagraph(scope.row)">编辑段落</el-button>
             <el-button size="mini" @click="eidtRow(scope.row)">编辑</el-button>
             <el-button size="mini" @click="remove(scope.row)">删除</el-button>
             <el-button size="mini" @click="addNewChilde(scope.row)">新增</el-button>
