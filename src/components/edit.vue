@@ -84,7 +84,7 @@ export default {
           //循环插入图片
           // for (let i = 0; i < 1; i++) {
           // console.log(result)
-          let url = `${this.$api.fileVideo}?fileName=` + result.data
+          let url = `${this.baseUrl}/file/video?fileName=` + result.data
           insertImg(url)
           // }
         }
