@@ -1,6 +1,13 @@
 <template>
   <div class="add_class_modal">
-    <el-dialog :title="title" :visible.sync="isShowModal" width="600" :before-close="handleClose">
+    <el-dialog
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :title="title"
+      :visible.sync="isShowModal"
+      width="600"
+      :before-close="handleClose"
+    >
       <div class="add_class_cont">
         <div class="fill_list">
           <div class="fill_name">课程名称</div>
@@ -37,57 +44,57 @@
 </template>
 <script>
 export default {
-  props: ["isShowModal", "data"],
+  props: ['isShowModal', 'data'],
   data() {
     return {
-      title: "新增课程",
+      title: '新增课程',
       personLists: [],
       formData: {
-        courseTitle: "",
-        courseDesc: "",
-        price:null
+        courseTitle: '',
+        courseDesc: '',
+        price: null
       },
       loading: false
-    };
+    }
   },
   components: {},
   watch: {
     data(val) {
       console.log(val)
       if (val) {
-        this.formData = JSON.parse(JSON.stringify(val));
+        this.formData = JSON.parse(JSON.stringify(val))
         if (val.id) {
-          this.title = "编辑课程";
+          this.title = '编辑课程'
         } else {
-          this.title = "新增课程";
+          this.title = '新增课程'
         }
       } else {
         this.formData = {
-          courseTitle: "",
-          courseDesc: "",
-          price:null
-        };
+          courseTitle: '',
+          courseDesc: '',
+          price: null
+        }
       }
     }
   },
   mounted() {},
   methods: {
     handleClose() {
-      this.$emit("closeModal");
+      this.$emit('closeModal')
     },
     closeModal() {
-      this.handleClose();
+      this.handleClose()
     },
     save() {
       if (!this.formData.courseTitle) {
-        this.$message.error("请填写课程名称!");
-        return;
+        this.$message.error('请填写课程名称!')
+        return
       }
       // if (!this.formData.courseTitle) {
       //   this.$message.error("请填写课程名称!");
       //   return;
       // }
-      this.loading = true;
+      this.loading = true
       this.$post({
         url: this.$api.courseModify,
         data: {
@@ -95,24 +102,24 @@ export default {
         }
       })
         .then(res => {
-          this.loading = false;
+          this.loading = false
           if (res.success) {
-            this.$message.success(res.msg);
+            this.$message.success(res.msg)
             this.formData = {
-              courseTitle: "",
-              courseDesc: "",
-              price:null
-            };
-            this.$emit("refresh");
-            this.handleClose();
+              courseTitle: '',
+              courseDesc: '',
+              price: null
+            }
+            this.$emit('refresh')
+            this.handleClose()
           }
         })
         .catch(err => {
-          this.loading = false;
-        });
+          this.loading = false
+        })
     }
   }
-};
+}
 </script>
 <style lang="scss" scoped>
 .add_class_cont {

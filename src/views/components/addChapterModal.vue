@@ -1,6 +1,13 @@
 <template>
   <div class="add_chapter_modal">
-    <el-dialog :title="title" :visible.sync="isShowModal" width="600" :before-close="handleClose">
+    <el-dialog
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :title="title"
+      :visible.sync="isShowModal"
+      width="600"
+      :before-close="handleClose"
+    >
       <div class="add_chapter_cont">
         <div class="fill_list">
           <div class="fill_name">章节名称</div>
@@ -51,84 +58,84 @@
 </template>
 <script>
 export default {
-  props: ["isShowModal", "data"],
+  props: ['isShowModal', 'data'],
   data() {
     return {
-      title: "新增章节",
+      title: '新增章节',
       // personLists: [],
       formData: {
-        catalogName: "",
-        sameLevelOrder: "",
-        parentId: "",
+        catalogName: '',
+        sameLevelOrder: '',
+        parentId: '',
         courseId: this.$route.query.id,
         price: null
       }
-    };
+    }
   },
   components: {},
   watch: {
     data(val) {
-      console.log(val);
+      console.log(val)
       if (val) {
-        if (val.type === "newChild") {
+        if (val.type === 'newChild') {
           this.formData = {
-            catalogName: "",
-            sameLevelOrder: "",
+            catalogName: '',
+            sameLevelOrder: '',
             parentId: val.parentId,
             courseId: this.$route.query.id,
             price: null
-          };
+          }
         } else {
-          this.formData = JSON.parse(JSON.stringify(val));
+          this.formData = JSON.parse(JSON.stringify(val))
         }
         if (val.id) {
-          this.title = "编辑章节";
+          this.title = '编辑章节'
         } else {
-          this.title = "新增章节";
+          this.title = '新增章节'
         }
       } else {
         this.formData = {
-          catalogName: "",
-          sameLevelOrder: "",
-          parentId: "",
+          catalogName: '',
+          sameLevelOrder: '',
+          parentId: '',
           courseId: this.$route.query.id,
           price: null
-        };
+        }
       }
     }
   },
   mounted() {},
   methods: {
     handleClose() {
-      this.$emit("closeModal");
+      this.$emit('closeModal')
     },
     closeModal() {
-      this.handleClose();
+      this.handleClose()
     },
     save() {
       if (!this.formData.catalogName) {
-        this.$message.error("请填写章节名称!");
-        return;
+        this.$message.error('请填写章节名称!')
+        return
       }
       if (!this.formData.price) {
-        this.$message.error("请填写章节价格!");
-        return;
+        this.$message.error('请填写章节价格!')
+        return
       }
       if (!this.formData.sameLevelOrder) {
-        this.$message.error("请填写章节优先级!");
-        return;
+        this.$message.error('请填写章节优先级!')
+        return
       }
       const data = {
         catalogName: this.formData.catalogName,
         sameLevelOrder: this.formData.sameLevelOrder,
         courseId: this.$route.query.id,
         price: this.formData.price
-      };
+      }
       if (this.formData.id) {
-        data.id = this.formData.id;
+        data.id = this.formData.id
       }
       if (this.formData.parentId) {
-        data.parentId = this.formData.parentId;
+        data.parentId = this.formData.parentId
       }
       this.$post({
         url: this.$api.courseCatalogModify,
@@ -137,14 +144,14 @@ export default {
         }
       }).then(res => {
         if (res.success) {
-          this.$message.success(res.msg);
-          this.$emit("refresh");
-          this.handleClose();
+          this.$message.success(res.msg)
+          this.$emit('refresh')
+          this.handleClose()
         }
-      });
+      })
     }
   }
-};
+}
 </script>
 <style lang="scss" scoped>
 .add_chapter_cont {

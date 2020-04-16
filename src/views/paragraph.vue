@@ -19,7 +19,11 @@
     <div class="table_lists">
       <el-table v-loading="loading" :data="tableData" style="width: 100%">
         <el-table-column prop="contentName" label="段落名称"></el-table-column>
-        <el-table-column prop="moduleType" label="段落类型"></el-table-column>
+        <el-table-column prop="moduleType" label="段落类型">
+          <template slot-scope="scope">
+            <div>{{getMoudleTypeById(scope.row.moduleType)}}</div>
+          </template>
+        </el-table-column>
         <el-table-column prop="priorityLevel" label="优先级"></el-table-column>
         <el-table-column label="操作" width="300">
           <template slot-scope="scope">
@@ -47,7 +51,8 @@ export default {
       isShowAddModal: false,
       tableData: [],
       rowData: null,
-      loading: false
+      loading: false,
+      paragraphLists: []
     }
   },
   components: {
@@ -61,9 +66,25 @@ export default {
     }
   },
   mounted() {
-    this.getLists()
+    this.getMoudleType()
   },
   methods: {
+    getMoudleTypeById(id) {
+      return this.paragraphLists.find(i => i.index == id).name
+    },
+    getMoudleType() {
+      this.$get({
+        url: `${this.$api.commonGetList}/module_type`,
+        data: {}
+      })
+        .then(res => {
+          if (res.success) {
+            this.paragraphLists = res.data
+            this.getLists()
+          }
+        })
+        .catch(err => {})
+    },
     closeModal() {
       this.isShowAddModal = false
     },
@@ -116,7 +137,7 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    .header_left{
+    .header_left {
       font-size: 18px;
       font-weight: bold;
     }

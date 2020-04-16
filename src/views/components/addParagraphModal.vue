@@ -2,6 +2,8 @@
   <div class="add_class_modal">
     <el-dialog
       :append-to-body="true"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
       :title="title"
       :visible.sync="isShowModal"
       width="800px"
@@ -37,7 +39,7 @@
         </div>
         <div class="add_class_bot">
           <template v-if="formData.moduleType==0">
-            <Edit :value="formData.courseContentVali.courseContent" @change="changeEidt"></Edit>
+            <Edit :value="formData.courseContentVali.courseContent" @change="changeEidt" ref="eidt"></Edit>
           </template>
           <template v-if="formData.moduleType==1">
             <Upload :data="formData.videoContentVali" ref="upload"></Upload>
@@ -174,6 +176,14 @@ export default {
     save() {
       let data = {
         ...this.formData
+      }
+      if (this.formData.moduleType == 0) {
+        data = {
+          ...data,
+          courseContentVali: {
+            courseContent: this.$refs.eidt.sendData()
+          }
+        }
       }
       if (this.formData.moduleType == 1) {
         data = {

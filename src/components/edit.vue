@@ -5,60 +5,63 @@
   </div>
 </template>
 <script>
-import E from "wangeditor";
+import E from 'wangeditor'
 export default {
-  props: ["value", "height"],
+  props: ['value', 'height'],
   data() {
     return {
-      editor: ""
-    };
+      editor: '',
+      content: ''
+    }
   },
   components: {},
   watch: {
     value(val) {
-      this.editor.txt.html(val);
+      this.content = val
+      this.editor.txt.html(val)
     }
   },
   mounted() {
-    this.seteditor();
-    this.editor.txt.html(this.value);
+    this.seteditor()
+    this.editor.txt.html(this.value)
+    this.content = this.value
   },
   methods: {
     seteditor(val) {
       // http://192.168.2.125:8080/admin/storage/create
-      this.editor = new E(this.$refs.tooBar, this.$refs.edit);
-      this.editor.customConfig.uploadImgShowBase64 = false; // base 64 存储图片
-      this.editor.customConfig.uploadImgServer = this.$api.commonUploadFiles; // 配置服务器端地址
-      this.editor.customConfig.uploadImgHeaders = {}; // 自定义 header
-      this.editor.customConfig.uploadFileName = "file"; // 后端接受上传文件的参数名
-      this.editor.customConfig.uploadImgMaxSize = 2 * 1024 * 1024; // 将图片大小限制为 2M
-      this.editor.customConfig.uploadImgMaxLength = 6; // 限制一次最多上传 3 张图片
-      this.editor.customConfig.uploadImgTimeout = 3 * 60 * 1000; // 设置超时时间
+      this.editor = new E(this.$refs.tooBar, this.$refs.edit)
+      this.editor.customConfig.uploadImgShowBase64 = false // base 64 存储图片
+      this.editor.customConfig.uploadImgServer = this.$api.fileUploadFile // 配置服务器端地址
+      this.editor.customConfig.uploadImgHeaders = {} // 自定义 header
+      this.editor.customConfig.uploadFileName = 'fileName' // 后端接受上传文件的参数名
+      this.editor.customConfig.uploadImgMaxSize = 2 * 1024 * 1024 // 将图片大小限制为 2M
+      this.editor.customConfig.uploadImgMaxLength = 6 // 限制一次最多上传 3 张图片
+      this.editor.customConfig.uploadImgTimeout = 3 * 60 * 1000 // 设置超时时间
 
       // 配置菜单
       this.editor.customConfig.menus = [
-        "head", // 标题
-        "bold", // 粗体
-        "fontSize", // 字号
-        "fontName", // 字体
-        "italic", // 斜体
-        "underline", // 下划线
-        "strikeThrough", // 删除线
-        "foreColor", // 文字颜色
-        "backColor", // 背景颜色
-        // 'link', // 插入链接
-        // 'list', // 列表
-        "justify", // 对齐方式
-        "quote", // 引用
-        "emoticon", // 表情
-        // 'image', // 插入图片
-        // 'table', // 表格
-        // 'video', // 插入视频
-        // 'code', // 插入代码
-        "undo", // 撤销
-        "redo", // 重复
-        "fullscreen" // 全屏
-      ];
+        'head', // 标题
+        'bold', // 粗体
+        'fontSize', // 字号
+        'fontName', // 字体
+        'italic', // 斜体
+        'underline', // 下划线
+        'strikeThrough', // 删除线
+        'foreColor', // 文字颜色
+        'backColor', // 背景颜色
+        'link', // 插入链接
+        'list', // 列表
+        'justify', // 对齐方式
+        'quote', // 引用
+        'emoticon', // 表情
+        'image', // 插入图片
+        'table', // 表格
+        'video', // 插入视频
+        'code', // 插入代码
+        'undo', // 撤销
+        'redo', // 重复
+        'fullscreen' // 全屏
+      ]
 
       this.editor.customConfig.uploadImgHooks = {
         fail: (xhr, editor, result) => {
@@ -81,19 +84,23 @@ export default {
           //循环插入图片
           // for (let i = 0; i < 1; i++) {
           // console.log(result)
-          let url = "http://otp.cdinfotech.top" + result.url;
-          insertImg(url);
+          let url = `${this.$api.fileVideo}?fileName=` + result.data
+          insertImg(url)
           // }
         }
-      };
+      }
       this.editor.customConfig.onchange = html => {
-        this.$emit("change", html); // 将内容同步到父组件中
-      };
+        // this.$emit('change', html) // 将内容同步到父组件中
+        this.content = html
+      }
       // 创建富文本编辑器
-      this.editor.create();
+      this.editor.create()
+    },
+    sendData() {
+      return this.content
     }
   }
-};
+}
 </script>
 <style lang="scss">
 .w-e-text {
